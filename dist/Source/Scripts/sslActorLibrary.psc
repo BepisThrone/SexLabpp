@@ -17,6 +17,12 @@ int Property FX_ALL = -1 AutoReadOnly Hidden
 int Property FX_VAGINAL = 0 AutoReadOnly Hidden
 int Property FX_ANAL = 1 AutoReadOnly Hidden
 int Property FX_ORAL = 2 AutoReadOnly Hidden
+; The maximum number of different types of CumFX that can be applied to an actor at once, always update to be +1 of the highest Fx type
+int Property MAX_FX_TYPES Hidden
+	int Function Get()
+		return FX_ORAL + 1
+	EndFunction
+EndProperty
 
 Spell Property abCumFX Auto
 Spell property CumVaginalSpell Auto
@@ -85,8 +91,15 @@ Function RemoveCumFx(Actor akTarget, int aiType)
 EndFunction
 
 int Function CountCumFx(Actor akActor, int aiType)
+	; if aiType is FX_ALL, return the total count of all types, otherwise return the count for the specific type
 	If (aiType == FX_ALL)
-		return StorageUtil.GetIntValue(akActor, ACTIVE_LAYER_PREFIX + FX_VAGINAL, 0) + StorageUtil.GetIntValue(akActor, ACTIVE_LAYER_PREFIX + FX_ANAL, 0) + StorageUtil.GetIntValue(akActor, ACTIVE_LAYER_PREFIX + FX_ORAL, 0)
+		int checkFxType = 0
+		int fxCount = 0
+		While (checkFxType < MAX_FX_TYPES)
+			fxCount += CountCumFx(akActor, checkFxType)
+			checkFxType += 1
+		EndWhile
+		return fxCount
 	Else
 		return StorageUtil.GetIntValue(akActor, ACTIVE_LAYER_PREFIX + aiType, 0)
 	EndIf
