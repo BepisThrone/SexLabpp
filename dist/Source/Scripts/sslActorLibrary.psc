@@ -34,12 +34,11 @@ Function AddCumFx(Actor akActor, int aiType)
 		akActor.AddSpell(abCumFX)
 	EndIf
 	If (aiType == FX_ALL)
-		BeginOverlay(akActor, FX_VAGINAL)
-		BeginOverlay(akActor, FX_ANAL)
-		BeginOverlay(akActor, FX_ORAL)
-		akActor.AddSpell(CumVaginalSpell)
-		akActor.AddSpell(CumOralSpell)
-		akActor.AddSpell(CumAnalSpell)
+		int addFxType = 0
+		while (addFxType < MAX_FX_TYPES)
+			AddCumFx(akActor, addFxType)
+			addFxType += 1
+		EndWhile
 	Else
 		If (aiType == FX_VAGINAL)
 			akActor.AddSpell(CumVaginalSpell)
@@ -58,9 +57,11 @@ EndFunction
 
 Function RemoveCumFx(Actor akTarget, int aiType)
 	If (aiType == FX_ALL)
-		RemoveCumFx(akTarget, FX_VAGINAL)
-		RemoveCumFx(akTarget, FX_ANAL)
-		RemoveCumFx(akTarget, FX_ORAL)
+		int removeFxType = 0
+		While (removeFxType < MAX_FX_TYPES)
+			RemoveCumFx(akTarget, removeFxType)
+			removeFxType += 1
+		EndWhile
 		return
 	EndIf
 	int removed = StorageUtil.IntListRemove(akTarget, APPLIED_TEXTURE_LIST, aiType)
